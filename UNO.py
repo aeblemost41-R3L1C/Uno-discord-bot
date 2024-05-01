@@ -27,7 +27,10 @@ card_color = [
     "Blue"
 ]
 
+table = {}
+public_cards = []
 
+game = False
 
 
 
@@ -48,3 +51,15 @@ def pull_cards():
     card_color =
     card = cards(card_type, card_color).card_name()
     return card
+
+
+@bot.tree.command(name="start")
+async def start(interaction)
+
+append
+
+
+
+
+token = get_token()
+bot.run(token)
