@@ -27,8 +27,10 @@ card_color = [
     "Blue"
 ]
 
-table = {}
-open_cards = []
+playcard = {}
+draw_cards = []
+User_cards = []
+
 turn_list = []
 turn_count = 0
 game = False
@@ -42,6 +44,9 @@ class Uno_Card:
 
     def card_name(self):
         return self.type, self.color
+"""
+UnoDeck = 
+"""
 
 def get_token():
     tokfile = open(TOK_FILE, 'r')
@@ -79,10 +84,12 @@ async def start(interaction: discord.Interaction):
     global game
     game = True
     global players
-    players = list(table.keys())
+    players = list(playcard.keys())
     for x in players:
-        
-
+        card_1 = pull_cards()
+        playcard[x]["cards"].append(card_1)
+        turn_list.append(x)
+    await interaction.response.send_message("siiuuu")
 
 
 @bot.tree.command(name="get_cards")
@@ -90,7 +97,7 @@ async def get_cards(interaction: discord.Interaction):
     global game
     user_id = interaction.user
     if game == True:
-        await interaction.response.send_message(f"your cards are {(table[user_id]['cards'])}", ephemeral=True)
+        await interaction.response.send_message(f"your cards are {([user_id]['cards'])}", ephemeral=True)
 
 
 
