@@ -28,16 +28,20 @@ card_color = [
 ]
 
 table = {}
-public_cards = []
-
+open_cards = []
+turn_list = []
+turn_count = 0
 game = False
 
 
 
-class cards:
+class Uno_Card:
+    def __init__(self,type,color):
+        self.type = type
+        self.suit = color
 
-
-
+    def card_name(self):
+        return self.type, self.color
 
 def get_token():
     tokfile = open(TOK_FILE, 'r')
@@ -47,16 +51,47 @@ def get_token():
 
 
 def pull_cards():
-    card_type =
-    card_color =
-    card = cards(card_type, card_color).card_name()
+    card_type = random.choice(card_type)
+    card_color = random.choice(card_color)
+    card = Uno_Card(card_type, card_color).card_name()
     return card
+
+def round_turn_update():
+  global turn_count
+  global round
+  turn_count += 1
+  if turn_count > len(turn_list) - 1:
+    round += 1
+    turn_count = 0
+
+
+@bot.tree.command(name="PlayUno")
+async def PlayUno(interaction: discord.Interaction):
+    user_id = interaction.user
+    if game == False:
+        await interaction.response.send_message(f"Welcome to Uno {interaction.user.mention}")
+    else:
+        await interaction.response.send_message(f"{interaction.user.mention} a game is already in progress")
 
 
 @bot.tree.command(name="start")
-async def start(interaction)
+async def start(interaction: discord.Interaction):
+    global game
+    game = True
+    global players
+    players = list(table.keys())
+    for x in players:
+        
 
-append
+
+
+@bot.tree.command(name="get_cards")
+async def get_cards(interaction: discord.Interaction):
+    global game
+    user_id = interaction.user
+    if game == True:
+        await interaction.response.send_message(f"your cards are {(table[user_id]['cards'])}", ephemeral=True)
+
 
 
 
