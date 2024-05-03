@@ -6,7 +6,6 @@ bot = commands.Bot(command_prefix="!", intents = discord.Intents.all())
 
 TOK_FILE = "token.txt"
 
-
 card_type = [
     "0",
     "1",
@@ -19,7 +18,6 @@ card_type = [
     "8",
     "9"
 ]
-
 card_color = [
     "Red",
     "Yellow",
@@ -27,26 +25,23 @@ card_color = [
     "Blue"
 ]
 
-playcard = {}
-draw_cards = []
-User_cards = []
+User_cards = {} #Key = "user_id", Value = ["kort på hånd 1", "kort på hånd 2", etc.]
+deck = [] # [] liste over alle kort man kan trække
+ActiveCard = [] # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
 
-turn_list = []
+turn_list = [] #
 turn_count = 0
 game = False
-
-
 
 class Uno_Card:
     def __init__(self,type,color):
         self.type = type
-        self.suit = color
+        self.color = color
 
     def card_name(self):
         return self.type, self.color
-"""
-UnoDeck = 
-"""
+    
+
 
 def get_token():
     tokfile = open(TOK_FILE, 'r')
@@ -54,8 +49,7 @@ def get_token():
     tokfile.close()
     return token
 
-
-def pull_cards():
+def get_cards():
     card_type = random.choice(card_type)
     card_color = random.choice(card_color)
     card = Uno_Card(card_type, card_color).card_name()
@@ -70,7 +64,7 @@ def round_turn_update():
     turn_count = 0
 
 
-@bot.tree.command(name="PlayUno")
+@bot.tree.command(name="playuno")
 async def PlayUno(interaction: discord.Interaction):
     user_id = interaction.user
     if game == False:
@@ -78,7 +72,7 @@ async def PlayUno(interaction: discord.Interaction):
     else:
         await interaction.response.send_message(f"{interaction.user.mention} a game is already in progress")
 
-
+"""
 @bot.tree.command(name="start")
 async def start(interaction: discord.Interaction):
     global game
@@ -86,22 +80,60 @@ async def start(interaction: discord.Interaction):
     global players
     players = list(playcard.keys())
     for x in players:
-        card_1 = pull_cards()
-        playcard[x]["cards"].append(card_1)
+        card_1 = get_cards()
+        User_cards[x]["cards"].append(card_1)
+        turn_list.append(x)
+    await interaction.response.send_message("siiuuu")
+"""
+
+@bot.tree.command(name="start")
+async def start(interaction: discord.Interaction):
+    global game
+    game = True
+    global players
+
+    for color in card_color:
+        for type in card_type:
+           deck.append(Uno_Card(type, color))
+           deck.append(Uno_Card(type, color))
+
+    for card in deck:
+       print(f"{card.type} {card.color}")
+    players = list(User_cards.keys())
+    for x in players:
+        card_1 = get_cards()
+        User_cards[x]["cards"].append(card_1)
         turn_list.append(x)
     await interaction.response.send_message("siiuuu")
 
 
-@bot.tree.command(name="get_cards")
+@bot.tree.command(name="draw")
+async def draw_cards(interaction: discord.Interaction):
+   user_id = interaction.user.id
+   
+   
+
+
+
+
+@bot.tree.command(name="_cards")
 async def get_cards(interaction: discord.Interaction):
     global game
-    user_id = interaction.user
+    user_id = interaction.user.id
     if game == True:
-        await interaction.response.send_message(f"your cards are {([user_id]['cards'])}", ephemeral=True)
+        await interaction.response.send_message(f"your cards are {(playcard[user_id]['cards'])}", ephemeral=True)
 
 
 
 
+@bot.event
+async def on_ready():
+  print("connected")
+  try:
+    synced = await bot.tree.sync()
+    print(f"s'Synced {len(synced)} command(s)")
+  except Exception as e:
+    print(e)
 
 token = get_token()
 bot.run(token)
