@@ -25,7 +25,7 @@ card_color = [
     "Blue"
 ]
 
-User_cards = {} #Key = "user_id", Value = ["kort på hånd 1", "kort på hånd 2", etc.]
+hand = {} #Key = "user_id", Value = ["kort på hånd 1", "kort på hånd 2", etc.]
 deck = [] # [] liste over alle kort man kan trække
 ActiveCard = [] # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
 
@@ -50,8 +50,11 @@ def get_token():
 def get_cards():
     card_type = random.choice(card_type)
     card_color = random.choice(card_color)
-    card = Uno_Card(card_type, card_color).card_name()
-    return card
+    cards = Uno_Card(card_type, card_color).card_name()
+    random.shuffle(deck)
+    hand.append(0)
+    deck.pop(0) 
+    return cards
 
 def round_turn_update():
   global turn_count
@@ -61,10 +64,11 @@ def round_turn_update():
     round += 1
     turn_count = 0
 
-"""hej"""
+
 @bot.tree.command(name="playuno")
 async def PlayUno(interaction: discord.Interaction):
     user_id = interaction.user
+    hand[user_id] = []
     if game == False:
         await interaction.response.send_message(f"Welcome to Uno {interaction.user.mention}")
     else:
@@ -98,29 +102,45 @@ async def start(interaction: discord.Interaction):
     for card in deck:
        print(f"{card.type} {card.color}")
     
-    players = list(User_cards.keys())
+    players = list(hand.keys())
+    for player_id in players:
+       hand[player_id] = get_cards()
+       
+
+
+
+
+
+
+    """
+    players = list(hand.keys())
     for x in players:
-        card_1 = get_cards()
-        User_cards[x]["cards"].append(card_1)
+        deck = get_cards()
+        hand[x]["cards"].append(deck)
         turn_list.append(x)
+    """
     await interaction.response.send_message("Starting Game")
 
 
 @bot.tree.command(name="draw")
 async def draw_cards(interaction: discord.Interaction):
    user_id = interaction.user.id
+
+            
    
    
 
 
 
 
-@bot.tree.command(name="_cards")
+@bot.tree.command(name="see_cards")
 async def get_cards(interaction: discord.Interaction):
     global game
     user_id = interaction.user.id
     if game == True:
-        await interaction.response.send_message(f"your cards are {(playcard[user_id]['cards'])}", ephemeral=True)
+        await interaction.response.send_message(f"your cards are {(hand[user_id]['cards'])}", ephemeral=True)
+
+
 
 
 
