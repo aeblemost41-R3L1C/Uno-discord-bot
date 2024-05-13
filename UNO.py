@@ -102,36 +102,17 @@ async def start(interaction: discord.Interaction):
        print(f"{card.type} {card.color}")
     
     players = hand.keys()
-    print(players)
     for user_id in players:
-       print(user_id)
-       cards = get_cards(user_id)
-       hand[user_id] = cards
+        cards = get_cards(user_id)
+        hand[user_id] = cards
     
   
-
-
-
-    """
-    players = list(hand.keys())
-    for x in players:
-        deck = get_cards()
-        hand[x]["cards"].append(deck)
-        turn_list.append(x)
-    """
     await interaction.response.send_message("Starting Game")
 
 
 @bot.tree.command(name="draw")
 async def draw_cards(interaction: discord.Interaction):
    user_id = interaction.user.id
-
-            
-   
-   
-
-
-
 
 @bot.tree.command(name="see_cards")
 async def see_cards(interaction: discord.Interaction):
