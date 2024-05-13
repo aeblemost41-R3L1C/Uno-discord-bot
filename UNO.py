@@ -47,13 +47,12 @@ def get_token():
     tokfile.close()
     return token
 
-def get_cards():
-    card_type = random.choice(card_type)
-    card_color = random.choice(card_color)
-    cards = Uno_Card(card_type, card_color).card_name()
+def get_cards(user_id):
+    cards = []
     random.shuffle(deck)
-    hand.append(0)
-    deck.pop(0) 
+    for i in range(7):
+        cards.append(deck[0].card_name())
+        deck.pop(0) 
     return cards
 
 def round_turn_update():
@@ -67,7 +66,7 @@ def round_turn_update():
 
 @bot.tree.command(name="playuno")
 async def PlayUno(interaction: discord.Interaction):
-    user_id = interaction.user
+    user_id = interaction.user.id
     hand[user_id] = []
     if game == False:
         await interaction.response.send_message(f"Welcome to Uno {interaction.user.mention}")
@@ -102,13 +101,14 @@ async def start(interaction: discord.Interaction):
     for card in deck:
        print(f"{card.type} {card.color}")
     
-    players = list(hand.keys())
-    for player_id in players:
-       hand[player_id] = get_cards()
-       
-
-
-
+    players = hand.keys()
+    print(players)
+    for user_id in players:
+       print(user_id)
+       cards = get_cards(user_id)
+       hand[user_id] = cards
+    
+  
 
 
 
@@ -134,11 +134,11 @@ async def draw_cards(interaction: discord.Interaction):
 
 
 @bot.tree.command(name="see_cards")
-async def get_cards(interaction: discord.Interaction):
+async def see_cards(interaction: discord.Interaction):
     global game
     user_id = interaction.user.id
     if game == True:
-        await interaction.response.send_message(f"your cards are {(hand[user_id]['cards'])}", ephemeral=True)
+        await interaction.response.send_message(f"your cards are {(hand[user_id])}", ephemeral=True)
 
 
 
