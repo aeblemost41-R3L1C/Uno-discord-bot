@@ -61,7 +61,7 @@ def round_turn_update():
     round += 1
     turn_count = 0
 
-
+"""hej"""
 @bot.tree.command(name="playuno")
 async def PlayUno(interaction: discord.Interaction):
     user_id = interaction.user
