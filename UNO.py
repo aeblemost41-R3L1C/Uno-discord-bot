@@ -41,8 +41,6 @@ class Uno_Card:
     def card_name(self):
         return self.type, self.color
     
-
-
 def get_token():
     tokfile = open(TOK_FILE, 'r')
     token = tokfile.read()
@@ -99,12 +97,13 @@ async def start(interaction: discord.Interaction):
 
     for card in deck:
        print(f"{card.type} {card.color}")
+    
     players = list(User_cards.keys())
     for x in players:
         card_1 = get_cards()
         User_cards[x]["cards"].append(card_1)
         turn_list.append(x)
-    await interaction.response.send_message("siiuuu")
+    await interaction.response.send_message("Starting Game")
 
 
 @bot.tree.command(name="draw")
