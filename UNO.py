@@ -27,7 +27,7 @@ card_color = [
 
 hand = {} #Key = "user_id", Value = ["kort på hånd 1", "kort på hånd 2", etc.]
 deck = [] # [] liste over alle kort man kan trække
-ActiveCard = [] # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
+ActiveCard = None # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
 
 turn_list = [] #
 turn_count = 0
@@ -60,6 +60,10 @@ def draw(user_id):
     drawn_card = deck.pop(0)
     hand[user_id].append(drawn_card.card_name())
     return drawn_card
+
+def draw_active():
+   global ActiveCard
+   ActiveCard = deck.pop(0)
 
 def print_deck():
    for card in deck:
