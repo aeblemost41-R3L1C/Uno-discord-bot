@@ -27,7 +27,7 @@ card_color = [
 
 hand = {} #Key = "user_id", Value = ["kort på hånd 1", "kort på hånd 2", etc.]
 deck = [] # [] liste over alle kort man kan trække
-active_card = None # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
+ActiveCard = None # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
 
 turn_list = [] #
 turn_count = 0
@@ -40,6 +40,20 @@ class Uno_Card:
 
     def card_name(self):
         return f"{self.type} {self.color}"
+
+def play_card(card):
+    global ActiveCard
+
+    # Split the active card into color and type
+    active_color, active_type = ActiveCard.split()
+
+    # Split the played card into color and type
+    played_color, played_type = card.split()
+
+    # Check if the played card matches the active color or type
+    if played_color == active_color or played_type == active_type:
+        ActiveCard = card
+        return True
 
 def get_token():
     tokfile = open(TOK_FILE, 'r')
@@ -62,19 +76,21 @@ def draw(user_id):
     return drawn_card
 
 def draw_active():
-   global active_card
-   active_card = deck.pop(0)
+   global ActiveCard
+   ActiveCard = deck.pop(0)
 
-def play_card(card):
-    global active_card
+"""
+card_type = ()
+card_color = ()
 
-    active_color, active_type = active_card.split()
+def Activecardtype():
+    if Uno_Card
+        ActiveCard == card_color
+    else: 
+       ActiveCard == card_type
+    print(Activecardtype)
+"""
 
-    played_color, played_type = card.split()
-
-    if played_color == active_color or played_type == active_type:
-        active_card = card
-        return True
 
 def print_deck():
    for card in deck:
@@ -103,43 +119,28 @@ async def start(interaction: discord.Interaction):
     global game
     game = True
     global players
-    global activecard
+    global ActiveCard
+
+
 
     for color in card_color:
         for type in card_type:
            deck.append(Uno_Card(type, color))
            deck.append(Uno_Card(type, color))
 
-    for card in deck: # printer bare kortene i konsollen
+    for card in deck:
        print(f"{card.type} {card.color}")
-    
+
     random.shuffle(deck)
-    activecard = deck.pop(0)
+    ActiveCard = deck.pop(0)
 
     players = hand.keys()
     for user_id in players:
         cards = get_cards(user_id)
         hand[user_id] = cards
-    
-    await interaction.response.send_message(f"Starting Game and the Active Card is {activecard.card_name()}")
 
 
-@bot.tree.command(name="see_cards")
-async def see_cards(interaction: discord.Interaction):
-    global game
-    user_id = interaction.user.id
-    if game == True:
-        await interaction.response.send_message(f"your cards are {(hand[user_id])}", ephemeral=True)
-
-@bot.tree.command(name="draw")
-async def draw_cards(interaction: discord.Interaction):
-    global game
-    user_id = interaction.user.id
-    print ("Active Card:", activecard.card_name())
-    if game == True:
-       drawn_card = draw(user_id)
-       await interaction.response.send_message(f"you drew a {drawn_card.card_name()}", ephemeral=True)
-
+    await interaction.response.send_message(f"Starting Game and the Active Card is {ActiveCard.card_name()}")
 
 @bot.tree.command(name="play")
 async def play(interaction: discord.Interaction, card: str):
@@ -158,8 +159,21 @@ async def play(interaction: discord.Interaction, card: str):
         await interaction.response.send_message(f"{interaction.user.mention}, a game is not currently in progress.", ephemeral=True)
 
 
+@bot.tree.command(name="see_cards")
+async def see_cards(interaction: discord.Interaction):
+    global game
+    user_id = interaction.user.id
+    if game == True:
+        await interaction.response.send_message(f"your cards are {(hand[user_id])}", ephemeral=True)
 
-
+@bot.tree.command(name="draw")
+async def draw_cards(interaction: discord.Interaction):
+    global game
+    user_id = interaction.user.id
+    print ("Active Card:", ActiveCard.card_name())
+    if game == True:
+       drawn_card = draw(user_id)
+       await interaction.response.send_message(f"you drew a {drawn_card.card_name()}", ephemeral=True)
 
 
 @bot.event
