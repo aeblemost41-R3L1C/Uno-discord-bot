@@ -41,6 +41,9 @@ class Uno_Card:
     def card_name(self):
         return f"{self.type} {self.color}"
     
+    
+
+    
 def get_token():
     tokfile = open(TOK_FILE, 'r')
     token = tokfile.read()
@@ -64,6 +67,19 @@ def draw(user_id):
 def draw_active():
    global ActiveCard
    ActiveCard = deck.pop(0)
+
+"""
+card_type = ()
+card_color = ()
+
+def Activecardtype():
+    if Uno_Card
+        ActiveCard == card_color
+    else: 
+       ActiveCard == card_type
+    print(Activecardtype)
+"""
+
 
 def print_deck():
    for card in deck:
@@ -92,6 +108,9 @@ async def start(interaction: discord.Interaction):
     global game
     game = True
     global players
+    global ActiveCard
+    
+    
 
     for color in card_color:
         for type in card_type:
@@ -101,12 +120,16 @@ async def start(interaction: discord.Interaction):
     for card in deck:
        print(f"{card.type} {card.color}")
     
+    random.shuffle(deck)
+    ActiveCard = deck.pop(0)
+
     players = hand.keys()
     for user_id in players:
         cards = get_cards(user_id)
         hand[user_id] = cards
     
-    await interaction.response.send_message("Starting Game")
+    
+    await interaction.response.send_message(f"Starting Game and the Active Card is {ActiveCard.card_name()}")
 
 
 @bot.tree.command(name="see_cards")
@@ -120,17 +143,11 @@ async def see_cards(interaction: discord.Interaction):
 async def draw_cards(interaction: discord.Interaction):
     global game
     user_id = interaction.user.id
-
+    print ("Active Card:", ActiveCard.card_name())
     if game == True:
        drawn_card = draw(user_id)
        await interaction.response.send_message(f"you drew a {drawn_card.card_name()}", ephemeral=True)
     
-@bot.tree.command(name="test")
-async def print_deck(interaction: discord.Interaction):
-    global game
-    user_id = interaction.user.id
-    if game == True:
-       await interaction.response.send_message(f"printed {deck()}", ephemeral=True)
 
 @bot.event
 async def on_ready():
