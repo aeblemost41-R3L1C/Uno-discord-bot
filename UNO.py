@@ -1,5 +1,6 @@
 import discord
 import random
+import time
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix="!", intents = discord.Intents.all())
@@ -163,6 +164,19 @@ async def draw_cards(interaction: discord.Interaction):
     if game == True:
        drawn_card = draw(user_id)
        await interaction.response.send_message(f"you drew a {drawn_card.card_name()}", ephemeral=True)
+
+@bot.event #sync test
+async def on_message(message):
+  contents = message.content
+  on_message_seconds = time.time()
+  
+  if contents.startswith("!echo"):
+
+      rem = contents[5:]
+      reply = "Du sendte " + rem
+      await message.channel.send(reply)
+      await_done_seconds = time.time() 
+      print(f"{await_done_seconds-on_message_seconds}")
 
 @bot.event
 async def on_ready():
