@@ -42,7 +42,6 @@ class Uno_Card:
     def card_name(self):
         return f"{self.type} {self.color}"
     
-
 def get_token():
     tokfile = open(TOK_FILE, 'r')
     token = tokfile.read()
@@ -93,7 +92,7 @@ def check_win(user_id):
     else:
         return False
 
-@bot.tree.command(name="playuno")
+@bot.tree.command(name="uno")
 async def PlayUno(interaction: discord.Interaction):
     user_id = interaction.user.id
     hand[user_id] = []
