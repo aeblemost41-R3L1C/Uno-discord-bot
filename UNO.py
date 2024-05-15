@@ -41,6 +41,7 @@ class Uno_Card:
 
     def card_name(self):
         return f"{self.type} {self.color}"
+    
 
 def get_token():
     tokfile = open(TOK_FILE, 'r')
@@ -137,9 +138,9 @@ async def play(interaction: discord.Interaction, card_str: str):
             if card_str in card.card_name():
                 if play_card(card):
                     hand[user_id].remove(card)
-                    await interaction.response.send_message(f"{interaction.user.mention} played {card.card_name} successfully!", ephemeral=True)
-                else:
-                    await interaction.response.send_message(f"{interaction.user.mention}, you cannot play {card.card_name} at this time.", ephemeral=True)
+                    await interaction.response.send_message(f"{interaction.user.mention} played {card.card_name()} successfully!", ephemeral=False)
+                else:  
+                    await interaction.response.send_message(f"{interaction.user.mention}, you cannot play {card.card_name()} at this time.", ephemeral=True)
     else:
         await interaction.response.send_message(f"{interaction.user.mention}, a game is not currently in progress.", ephemeral=True)
 
