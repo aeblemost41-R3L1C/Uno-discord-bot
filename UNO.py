@@ -44,14 +44,9 @@ class Uno_Card:
 def play_card(card):
     global ActiveCard
 
-    # Split the active card into color and type
-    active_color, active_type = ActiveCard.split()
-
-    # Split the played card into color and type
-    played_color, played_type = card.split()
 
     # Check if the played card matches the active color or type
-    if played_color == active_color or played_type == active_type:
+    if card.color == ActiveCard.color or card.type == ActiveCard.type:
         ActiveCard = card
         return True
 
@@ -65,14 +60,14 @@ def get_cards(user_id):
     cards = []
     random.shuffle(deck)
     for i in range(7):
-        cards.append(deck[0].card_name())
+        cards.append(deck[0])
         deck.pop(0) 
     return cards
 
 def draw(user_id):
     random.shuffle(deck)
     drawn_card = deck.pop(0)
-    hand[user_id].append(drawn_card.card_name())
+    hand[user_id].append(drawn_card)
     return drawn_card
 
 def draw_active():
@@ -143,18 +138,18 @@ async def start(interaction: discord.Interaction):
     await interaction.response.send_message(f"Starting Game and the Active Card is {ActiveCard.card_name()}")
 
 @bot.tree.command(name="play")
-async def play(interaction: discord.Interaction, card: str):
+async def play(interaction: discord.Interaction, card_str: str):
     global game
     user_id = interaction.user.id
     if game:
-        if card in hand[user_id]:
-            if play_card(card):
-                hand[user_id].remove(card)
-                await interaction.response.send_message(f"{interaction.user.mention} played {card} successfully!", ephemeral=True)
-            else:
-                await interaction.response.send_message(f"{interaction.user.mention}, you cannot play {card} at this time.", ephemeral=True)
-        else:
-            await interaction.response.send_message(f"{interaction.user.mention}, you do not have {card} in your hand.", ephemeral=True)
+        print(hand[user_id])
+        for card in hand[user_id]:
+            if card_str in card.card_name():
+                if play_card(card):
+                    hand[user_id].remove(card)
+                    await interaction.response.send_message(f"{interaction.user.mention} played {card} successfully!", ephemeral=True)
+                else:
+                    await interaction.response.send_message(f"{interaction.user.mention}, you cannot play {card} at this time.", ephemeral=True)
     else:
         await interaction.response.send_message(f"{interaction.user.mention}, a game is not currently in progress.", ephemeral=True)
 
@@ -163,8 +158,11 @@ async def play(interaction: discord.Interaction, card: str):
 async def see_cards(interaction: discord.Interaction):
     global game
     user_id = interaction.user.id
+    response = ""
     if game == True:
-        await interaction.response.send_message(f"your cards are {(hand[user_id])}", ephemeral=True)
+        for card in hand[user_id]:
+            response += card.card_name() + " "
+        await interaction.response.send_message(f"your cards are {response}", ephemeral=True)
 
 @bot.tree.command(name="draw")
 async def draw_cards(interaction: discord.Interaction):
