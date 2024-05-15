@@ -18,6 +18,7 @@ card_type = [
     "8",
     "9"
 ]
+
 card_color = [
     "Red",
     "Yellow",
@@ -41,20 +42,19 @@ class Uno_Card:
     def card_name(self):
         return f"{self.type} {self.color}"
 
-def play_card(card):
-    global ActiveCard
-
-
-    # Check if the played card matches the active color or type
-    if card.color == ActiveCard.color or card.type == ActiveCard.type:
-        ActiveCard = card
-        return True
-
 def get_token():
     tokfile = open(TOK_FILE, 'r')
     token = tokfile.read()
     tokfile.close()
     return token
+
+def play_card(card):
+    global ActiveCard
+
+    # Check if the played card matches the active color or type
+    if card.color == ActiveCard.color or card.type == ActiveCard.type:
+        ActiveCard = card
+        return True
 
 def get_cards(user_id):
     cards = []
@@ -74,24 +74,11 @@ def draw_active():
    global ActiveCard
    ActiveCard = deck.pop(0)
 
-"""
-card_type = ()
-card_color = ()
-
-def Activecardtype():
-    if Uno_Card
-        ActiveCard == card_color
-    else: 
-       ActiveCard == card_type
-    print(Activecardtype)
-"""
-
-
-def print_deck():
+def print_deck(): # printer deck i terminal
    for card in deck:
       print(f"{card.type} {card.color}")
 
-def round_turn_update():
+def round_turn_update(): # to be continued
   global turn_count
   global round
   turn_count += 1
@@ -99,6 +86,11 @@ def round_turn_update():
     round += 1
     turn_count = 0
 
+def check_win(user_id):
+    if len [hand(user_id)] == 0:
+        return True
+    else:
+        return False
 
 @bot.tree.command(name="playuno")
 async def PlayUno(interaction: discord.Interaction):
@@ -115,8 +107,6 @@ async def start(interaction: discord.Interaction):
     game = True
     global players
     global ActiveCard
-
-
 
     for color in card_color:
         for type in card_type:
@@ -153,7 +143,6 @@ async def play(interaction: discord.Interaction, card_str: str):
     else:
         await interaction.response.send_message(f"{interaction.user.mention}, a game is not currently in progress.", ephemeral=True)
 
-
 @bot.tree.command(name="see_cards")
 async def see_cards(interaction: discord.Interaction):
     global game
@@ -163,6 +152,8 @@ async def see_cards(interaction: discord.Interaction):
         for card in hand[user_id]:
             response += card.card_name() + " "
         await interaction.response.send_message(f"your cards are {response}", ephemeral=True)
+        if check_win(user_id):
+            await interaction.response.send_message(f"You win! {interaction.user.mention}", ephemeral=False, tts=True)
 
 @bot.tree.command(name="draw")
 async def draw_cards(interaction: discord.Interaction):
@@ -172,7 +163,6 @@ async def draw_cards(interaction: discord.Interaction):
     if game == True:
        drawn_card = draw(user_id)
        await interaction.response.send_message(f"you drew a {drawn_card.card_name()}", ephemeral=True)
-
 
 @bot.event
 async def on_ready():
