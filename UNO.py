@@ -31,8 +31,6 @@ hand = {} #Key = "user_id", Value = ["kort på hånd 1", "kort på hånd 2", etc
 deck = [] # [] liste over alle kort man kan trække
 ActiveCard = None # [] = de fjernede kort fra "User_cards" tilføjes hertil, og det aktive kort opdateres
 
-turn_list = [] #
-turn_count = 0
 game = False
 
 class Uno_Card:
@@ -78,14 +76,6 @@ def draw_active():
 def print_deck(): # printer deck i terminal
    for card in deck:
       print(f"{card.type} {card.color}")
-
-def round_turn_update(): # to be continued
-  global turn_count
-  global round
-  turn_count += 1
-  if turn_count > len(turn_list) - 1:
-    round += 1
-    turn_count = 0
 
 def check_win(user_id):
     if len [hand(user_id)] == 0:
