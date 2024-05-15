@@ -155,6 +155,17 @@ async def draw_cards(interaction: discord.Interaction):
        drawn_card = draw(user_id)
        await interaction.response.send_message(f"you drew a {drawn_card.card_name()}", ephemeral=True)
 
+@bot.tree.command(name="test") #Data/Controlstructure test
+async def test(interaction: discord.Interaction):
+    global game
+    game = False
+    for color in card_color:
+        for type in card_type:
+            deck.append(Uno_Card(type, color))
+            deck.append(Uno_Card(type, color))
+    for card in deck:
+        print(f"{card.type} {card.color}")
+
 @bot.event #sync test
 async def on_message(message):
   contents = message.content
